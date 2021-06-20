@@ -12,7 +12,6 @@ server.listen(3001, () => {
 server.use(cors());
 
 server.get("/", (req, res) => {
-  //res.send("Hello world!");
   fs.readFile("./todos.json", (err, data) => {
     res.send(JSON.parse(data));
   },
@@ -20,13 +19,11 @@ server.get("/", (req, res) => {
 });
 
 server.post("/", (req, res) => {
-  const body = req.body;
-  console.log("body: ", body);
+  const { body } = req;
   fs.readFile("./todos.json", (err, data) => {
     const db = JSON.parse(data);
-    //console.log(db);
     const id = Date.now();
-    db.todos[id] = { ...req.body };
+    db.todos[id] = body;
 
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
@@ -41,7 +38,7 @@ server.post("/", (req, res) => {
 server.delete('/', (req, res) => {
   fs.readFile('./todos.json', (err, data) => {
     const db = JSON.parse(data);
-    const body = req.body;
+    const { body } = req;
     delete db.todos[body.id];
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
@@ -56,7 +53,7 @@ server.delete('/', (req, res) => {
 server.put('/', (req, res) => {
   fs.readFile('./todos.json', (err, data) => {
     const db = JSON.parse(data);
-    const body = req.body;
+    const { body } = req;
     db.todos[body.id].complete = !db.todos[body.id].complete;
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
