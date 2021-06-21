@@ -22,8 +22,8 @@ server.post("/", (req, res) => {
   const { body } = req;
   fs.readFile("./todos.json", (err, data) => {
     const db = JSON.parse(data);
-    const id = Date.now();
-    db.todos[id] = body;
+    
+    db.toDoList.push(req.body);
 
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
@@ -38,8 +38,9 @@ server.post("/", (req, res) => {
 server.delete('/', (req, res) => {
   fs.readFile('./todos.json', (err, data) => {
     const db = JSON.parse(data);
-    const { body } = req;
-    delete db.todos[body.id];
+    const newTodos = db.todos.filter(todo => req.body.id !== todo.id)
+    db.todos = newTodos;
+
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
         console.log("error", err);
@@ -54,7 +55,9 @@ server.put('/', (req, res) => {
   fs.readFile('./todos.json', (err, data) => {
     const db = JSON.parse(data);
     const { body } = req;
-    db.todos[body.id].complete = !db.todos[body.id].complete;
+    const idx = db.todos.findIndex(todo => req.body.id === todo.id);
+    db.todos[idx].completed = !db.todos[idx].completed;
+
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
         console.log("error", err);
