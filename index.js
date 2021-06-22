@@ -38,8 +38,8 @@ server.post("/", (req, res) => {
 server.delete('/', (req, res) => {
   fs.readFile('./todos.json', (err, data) => {
     const db = JSON.parse(data);
-    const newTodos = db.todos.filter(todo => req.body.id !== todo.id)
-    db.todos = newTodos;
+    const newTodos = db.toDoList.filter(todo => req.body.id !== todo.id)
+    db.toDoList = newTodos;
 
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
@@ -55,8 +55,8 @@ server.put('/', (req, res) => {
   fs.readFile('./todos.json', (err, data) => {
     const db = JSON.parse(data);
     const { body } = req;
-    const idx = db.todos.findIndex(todo => req.body.id === todo.id);
-    db.todos[idx].completed = !db.todos[idx].completed;
+    const idx = db.toDoList.findIndex(todo => req.body.id === todo.id);
+    db.toDoList[idx].completed = !db.toDoList[idx].completed;
 
     fs.writeFile("./todos.json", JSON.stringify(db), (err) => {
       if (err) {
